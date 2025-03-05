@@ -456,7 +456,13 @@ textarea.input {
 .header-logo .logo img {
   display: block;
 }
-
+.logo-text {
+  font-size: 24px; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+  color: #0be11a; /* Set the text color */
+  text-transform: uppercase; /* Transform text to uppercase */
+  letter-spacing: 2px; /* Add some letter spacing */
+}
 /*----------------------------*\
 	Search
 \*----------------------------*/
