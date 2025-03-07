@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-		<title>Electro - HTML Ecommerce Template</title>
+		<title>Gear Galaxy</title>
 
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
@@ -95,45 +95,27 @@
 								<!-- /Wishlist -->
 								 
 								<!-- Cart -->
-								<div class="dropdown">
-									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<i class="fa fa-shopping-cart"></i>
-										<span>Your Cart</span>
-									</a>
-									<div class="cart-dropdown">
-										<div class="cart-list">
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="./img/product01.png" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
+								     <!-- Cart -->
+									 <div class="dropdown">
+										<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+											<i class="fa fa-shopping-cart"></i>
+											<span>Your Cart</span>
+										</a>
+										<div class="cart-dropdown">
+											<div class="cart-list">
+												<!-- Cart items will be dynamically added here -->
 											</div>
-
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="./img/product02.png" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
+											<div class="cart-summary">
+												<small>0 Item(s) selected</small>
+												<h5>SUBTOTAL: ₹0</h5>
 											</div>
-										</div>
-										<div class="cart-summary">
-											<small>3 Item(s) selected</small>
-											<h5>SUBTOTAL: $2940.00</h5>
-										</div>
-										<div class="cart-btns">
-											<a href="#">View Cart</a>
-											<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+											<div class="cart-btns">
+												<a href="#">View Cart</a>
+												<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+											</div>
 										</div>
 									</div>
-								</div>
+									<!-- /Cart -->
 								<!-- /Cart -->
 							
 								<!-- /Menu Toogle -->
@@ -787,6 +769,66 @@
 		<script src="js/nouislider.min.js"></script>
 		<script src="js/jquery.zoom.min.js"></script>
 		<script src="js/main.js"></script>
+		<script>
+			let cart = [];
+
+function addToCart(productName, productPrice, productImg) {
+    const existingProduct = cart.find(item => item.name === productName);
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        cart.push({ name: productName, price: productPrice, img: productImg, quantity: 1 });
+    }
+    updateCartDisplay();
+}
+
+function updateCartDisplay() {
+    const cartList = document.querySelector('.cart-list');
+    const cartSummary = document.querySelector('.cart-summary');
+    cartList.innerHTML = '';
+    let total = 0;
+    let itemCount = 0;
+
+    cart.forEach(item => {
+        total += item.price * item.quantity;
+        itemCount += item.quantity;
+        cartList.innerHTML += `
+            <div class="product-widget">
+                <div class="product-img">
+                    <img src="${item.img}" alt="">
+                </div>
+                <div class="product-body">
+                    <h3 class="product-name"><a href="#">${item.name}</a></h3>
+                    <h4 class="product-price"><span class="qty">${item.quantity}x</span>₹${item.price.toLocaleString()}</h4>
+                </div>
+                <button class="delete" onclick="removeFromCart('${item.name}')"><i class="fa fa-close"></i></button>
+            </div>
+        `;
+    });
+
+    cartSummary.innerHTML = `
+        <small>${itemCount} Item(s) selected</small>
+        <h5>SUBTOTAL: ₹${total.toLocaleString()}</h5>
+    `;
+}
+
+function removeFromCart(productName) {
+    cart = cart.filter(item => item.name !== productName);
+    updateCartDisplay();
+}
+
+document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const product = this.closest('.product');
+        const productName = product.querySelector('.product-name a').innerText;
+        const productPriceElement = product.querySelector('.product-price');
+        const productPriceText = productPriceElement.innerText.replace('₹', '').replace(/,/g, '').trim();
+        const productPrice = parseInt(productPriceText.split(' ')[0]);
+        const productImg = product.querySelector('.product-img img').src;
+        addToCart(productName, productPrice, productImg);
+    });
+});
+		</script>
 
 	</body>
 </html>

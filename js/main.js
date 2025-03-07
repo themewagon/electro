@@ -218,4 +218,60 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('wishlist-modal').style.display = 'none';
         }
     });
+	let cart = [];
+
+function addToCart(productName, productPrice, productImg) {
+    const existingProduct = cart.find(item => item.name === productName);
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        cart.push({ name: productName, price: productPrice, img: productImg, quantity: 1 });
+    }
+    updateCartDisplay();
+}
+
+function updateCartDisplay() {
+    const cartList = document.querySelector('.cart-list');
+    const cartSummary = document.querySelector('.cart-summary');
+    cartList.innerHTML = '';
+    let total = 0;
+    let itemCount = 0;
+
+    cart.forEach(item => {
+        total += item.price * item.quantity;
+        itemCount += item.quantity;
+        cartList.innerHTML += `
+            <div class="product-widget">
+                <div class="product-img">
+                    <img src="${item.img}" alt="">
+                </div>
+                <div class="product-body">
+                    <h3 class="product-name"><a href="#">${item.name}</a></h3>
+                    <h4 class="product-price"><span class="qty">${item.quantity}x</span>₹${item.price}</h4>
+                </div>
+                <button class="delete" onclick="removeFromCart('${item.name}')"><i class="fa fa-close"></i></button>
+            </div>
+        `;
+    });
+
+    cartSummary.innerHTML = `
+        <small>${itemCount} Item(s) selected</small>
+        <h5>SUBTOTAL: ₹${total}</h5>
+    `;
+}
+
+function removeFromCart(productName) {
+    cart = cart.filter(item => item.name !== productName);
+    updateCartDisplay();
+}
+
+document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const product = this.closest('.product');
+        const productName = product.querySelector('.product-name a').innerText;
+        const productPrice = parseInt(product.querySelector('.product-price').innerText.replace('₹', ''));
+        const productImg = product.querySelector('.product-img img').src;
+        addToCart(productName, productPrice, productImg);
+    });
+});
 });
