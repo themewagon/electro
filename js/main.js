@@ -274,4 +274,13 @@ document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         addToCart(productName, productPrice, productImg);
     });
 });
+// Example function to add items to the cart
+function addToCart(product) {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    cartItems.push(product);
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+}
+
+// Example usage
+addToCart({ name: "Product Name Goes Here", quantity: 1, price: 980.00 });
 });

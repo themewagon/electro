@@ -62,14 +62,12 @@
 					<!-- row -->
 					<div class="row">
 						<!-- LOGO -->
-						<div class="col-md-3">
-							<div class="header-logo">
-								<a href="#" class="logo">
-									<img src="./img/logo.png" alt="">
-								</a>
-							</div>
+					<div class="col-md-3">
+						<div class="header-logo">
+							<a href="#" class="logo"><span class="logo-text">Gear Galaxy</span></a>
 						</div>
-						<!-- /LOGO -->
+					</div>
+					<!-- /LOGO -->
 
 						<!-- SEARCH BAR -->
 						<div class="col-md-6">
@@ -90,58 +88,9 @@
 						<!-- ACCOUNT -->
 						<div class="col-md-3 clearfix">
 							<div class="header-ctn">
-								<!-- Wishlist -->
-								<div>
-									<a href="#">
-										<i class="fa fa-heart-o"></i>
-										<span>Your Wishlist</span>
-										<div class="qty">2</div>
-									</a>
-								</div>
-								<!-- /Wishlist -->
+								
 
-								<!-- Cart -->
-								<div class="dropdown">
-									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<i class="fa fa-shopping-cart"></i>
-										<span>Your Cart</span>
-										<div class="qty">3</div>
-									</a>
-									<div class="cart-dropdown">
-										<div class="cart-list">
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="./img/product01.png" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
-
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="./img/product02.png" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
-										</div>
-										<div class="cart-summary">
-											<small>3 Item(s) selected</small>
-											<h5>SUBTOTAL: $2940.00</h5>
-										</div>
-										<div class="cart-btns">
-											<a href="#">View Cart</a>
-											<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
-										</div>
-									</div>
-								</div>
-								<!-- /Cart -->
+								
 
 								<!-- Menu Toogle -->
 								<div class="menu-toggle">
@@ -303,23 +252,16 @@
 								<div><strong>PRODUCT</strong></div>
 								<div><strong>TOTAL</strong></div>
 							</div>
-							<div class="order-products">
-								<div class="order-col">
-									<div>1x Product Name Goes Here</div>
-									<div>$980.00</div>
-								</div>
-								<div class="order-col">
-									<div>2x Product Name Goes Here</div>
-									<div>$980.00</div>
-								</div>
+							<div class="order-products" id="order-products">
+								<!-- Dynamic content will be inserted here -->
 							</div>
 							<div class="order-col">
-								<div>Shiping</div>
+								<div>Shipping</div>
 								<div><strong>FREE</strong></div>
 							</div>
 							<div class="order-col">
 								<div><strong>TOTAL</strong></div>
-								<div><strong class="order-total">$2940.00</strong></div>
+								<div><strong class="order-total" id="order-total">$0.00</strong></div>
 							</div>
 						</div>
 						<div class="payment-method">
@@ -432,6 +374,39 @@
 		<script src="js/nouislider.min.js"></script>
 		<script src="js/jquery.zoom.min.js"></script>
 		<script src="js/main.js"></script>
+		<script>
+			// Example cart items stored in localStorage
+			
+			function loadCartItems() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const orderProductsContainer = document.getElementById('order-products');
+            const orderTotalElement = document.getElementById('order-total');
+            let total = 0;
+
+            cartItems.forEach(item => {
+                const itemTotal = item.quantity * item.price;
+                total += itemTotal;
+
+                const orderCol = document.createElement('div');
+                orderCol.className = 'order-col';
+                orderCol.innerHTML = `
+                    <div>${item.quantity}x ${item.name}</div>
+                    <div>$${itemTotal.toFixed(2)}</div>
+                `;
+                orderProductsContainer.appendChild(orderCol);
+            });
+
+            orderTotalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Load cart items on page load
+        document.addEventListener('DOMContentLoaded', loadCartItems);
+		function addToCart(product) {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    cartItems.push(product);
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+}
+    </script>
 
 	</body>
 </html>
