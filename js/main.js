@@ -166,3 +166,56 @@
 	}
 
 })(jQuery);
+
+document.addEventListener('DOMContentLoaded', function() {
+    const wishlist = [];
+
+    function addToWishlist(product) {
+        wishlist.push(product);
+        updateWishlistView();
+    }
+
+    function updateWishlistView() {
+        const wishlistContainer = document.getElementById('wishlist-container');
+        wishlistContainer.innerHTML = '';
+        wishlist.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.className = 'product-widget';
+            productElement.innerHTML = `
+                <div class="product-img">
+                    <img src="${product.img}" alt="">
+                </div>
+                <div class="product-body">
+                    <p class="product-category">${product.category}</p>
+                    <h3 class="product-name"><a href="#">${product.name}</a></h3>
+                    <h4 class="product-price">${product.price} <del class="product-old-price">${product.oldPrice}</del></h4>
+                </div>
+            `;
+            wishlistContainer.appendChild(productElement);
+        });
+    }
+
+    document.querySelectorAll('.add-to-wishlist').forEach((button, index) => {
+        button.addEventListener('click', function() {
+            const product = {
+                img: this.closest('.product').querySelector('.product-img img').src,
+                category: this.closest('.product').querySelector('.product-category').textContent,
+                name: this.closest('.product').querySelector('.product-name a').textContent,
+                price: this.closest('.product').querySelector('.product-price').textContent.split(' ')[0],
+                oldPrice: this.closest('.product').querySelector('.product-old-price').textContent
+            };
+            addToWishlist(product);
+            document.getElementById('wishlist-modal').style.display = 'block';
+        });
+    });
+
+    document.querySelector('.modal .close').addEventListener('click', function() {
+        document.getElementById('wishlist-modal').style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target == document.getElementById('wishlist-modal')) {
+            document.getElementById('wishlist-modal').style.display = 'none';
+        }
+    });
+});
