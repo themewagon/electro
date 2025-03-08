@@ -725,17 +725,6 @@
                     </div>
 
                     <div class="clearfix visible-xs"></div>
-
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Service</h3>
-                            <ul class="footer-links">
-                                <li><a href="Login page.html">My Account</a></li>
-                                <li><a href="#">View Cart</a></li>
-                                <li><a href="#">Wishlist</a></li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -757,68 +746,70 @@
     <script src="js/main.js"></script>
 
     <script>
-        let cart = [];
-        let cartItemCount = 0;
-        let cartSubtotal = 0;
-
-        function addToCart(name, price, image) {
-            const existingItem = cart.find(item => item.name === name);
-            if (existingItem) {
-                existingItem.qty += 1;
-            } else {
-                cart.push({ name, price, image, qty: 1 });
-            }
-            updateCart();
-            showCartDropdown();
-        }
-
-        function updateCart() {
-            const cartList = document.getElementById('cart-list');
-            cartList.innerHTML = '';
-            cartItemCount = 0;
-            cartSubtotal = 0;
-
-            cart.forEach(item => {
-                cartItemCount += item.qty;
-                cartSubtotal += item.price * item.qty;
-
-                const cartItem = document.createElement('div');
-                cartItem.classList.add('product-widget');
-                cartItem.innerHTML = `
-                    <div class="product-img">
-                        <img src="${item.image}" alt="">
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-name"><a href="#">${item.name}</a></h3>
-                        <h4 class="product-price"><span class="qty">${item.qty}x</span>₹${item.price}</h4>
-                    </div>
-                    <button class="delete" onclick="removeFromCart('${item.name}')"><i class="fa fa-close"></i></button>
-                `;
-                cartList.appendChild(cartItem);
-            });
-
-            document.getElementById('cart-item-count').innerText = `${cartItemCount} Item(s) selected`;
-            document.getElementById('cart-subtotal').innerText = `SUBTOTAL: ₹${cartSubtotal}`;
-        }
-
-        function removeFromCart(name) {
-            const itemIndex = cart.findIndex(item => item.name === name);
-            if (itemIndex > -1) {
-                cartItemCount -= cart[itemIndex].qty;
-                cartSubtotal -= cart[itemIndex].price * cart[itemIndex].qty;
-                cart.splice(itemIndex, 1);
-                updateCart();
-            }
-        }
-
-        function showCartDropdown() {
-            const cartDropdown = document.querySelector('.cart-dropdown');
-            const dropdownToggle = document.querySelector('.dropdown-toggle');
-            $(dropdownToggle).dropdown('toggle');
-            setTimeout(() => {
-                $(dropdownToggle).dropdown('toggle');
-            }); // Hide the dropdown after 3 seconds
-        }
-    </script>
+		let cart = [];
+		let cartItemCount = 0;
+		let cartSubtotal = 0;
+	
+		function addToCart(name, price, image) {
+			const existingItem = cart.find(item => item.name === name);
+			if (existingItem) {
+				existingItem.qty += 1;
+			} else {
+				cart.push({ name, price, image, qty: 1 });
+			}
+			updateCart();
+			showCartDropdown();
+			localStorage.setItem('cart', JSON.stringify(cart)); // Store cart data in localStorage
+		}
+	
+		function updateCart() {
+			const cartList = document.getElementById('cart-list');
+			cartList.innerHTML = '';
+			cartItemCount = 0;
+			cartSubtotal = 0;
+	
+			cart.forEach(item => {
+				cartItemCount += item.qty;
+				cartSubtotal += item.price * item.qty;
+	
+				const cartItem = document.createElement('div');
+				cartItem.classList.add('product-widget');
+				cartItem.innerHTML = `
+					<div class="product-img">
+						<img src="${item.image}" alt="">
+					</div>
+					<div class="product-body">
+						<h3 class="product-name"><a href="#">${item.name}</a></h3>
+						<h4 class="product-price"><span class="qty">${item.qty}x</span>₹${item.price}</h4>
+					</div>
+					<button class="delete" onclick="removeFromCart('${item.name}')"><i class="fa fa-close"></i></button>
+				`;
+				cartList.appendChild(cartItem);
+			});
+	
+			document.getElementById('cart-item-count').innerText = `${cartItemCount} Item(s) selected`;
+			document.getElementById('cart-subtotal').innerText = `SUBTOTAL: ₹${cartSubtotal}`;
+		}
+	
+		function removeFromCart(name) {
+			const itemIndex = cart.findIndex(item => item.name === name);
+			if (itemIndex > -1) {
+				cartItemCount -= cart[itemIndex].qty;
+				cartSubtotal -= cart[itemIndex].price * cart[itemIndex].qty;
+				cart.splice(itemIndex, 1);
+				updateCart();
+				localStorage.setItem('cart', JSON.stringify(cart)); // Update cart data in localStorage
+			}
+		}
+	
+		function showCartDropdown() {
+			const cartDropdown = document.querySelector('.cart-dropdown');
+			const dropdownToggle = document.querySelector('.dropdown-toggle');
+			$(dropdownToggle).dropdown('toggle');
+			setTimeout(() => {
+				$(dropdownToggle).dropdown('toggle');
+			}); 
+		}
+	</script>
 </body>
 </html>

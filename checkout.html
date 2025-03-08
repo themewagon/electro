@@ -238,22 +238,15 @@
 								<div><strong>TOTAL</strong></div>
 							</div>
 							<div class="order-products">
-								<div class="order-col">
-									<div>1x Product Name Goes Here</div>
-									<div>$980.00</div>
-								</div>
-								<div class="order-col">
-									<div>2x Product Name Goes Here</div>
-									<div>$980.00</div>
-								</div>
+								<!-- Cart items will be dynamically added here -->
 							</div>
 							<div class="order-col">
-								<div>Shiping</div>
+								<div>Shipping</div>
 								<div><strong>FREE</strong></div>
 							</div>
 							<div class="order-col">
 								<div><strong>TOTAL</strong></div>
-								<div><strong class="order-total">$2940.00</strong></div>
+								<div><strong class="order-total">₹0</strong></div>
 							</div>
 						</div>
 						<div class="payment-method">
@@ -337,19 +330,6 @@
 						</div>
 
 						<div class="clearfix visible-xs"></div>
-
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Service</h3>
-								<ul class="footer-links">
-									<li><a href="Login page.html">My Account</a></li>
-									<li><a href="#">View Cart</a></li>
-									<li><a href="#">Wishlist</a></li>
-								</ul>
-							</div>
-						</div>
-
-						
 					</div>
 					<!-- /row -->
 				</div>
@@ -368,4 +348,31 @@
 		<script src="js/main.js"></script>
 
 	</body>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const cart = JSON.parse(localStorage.getItem('cart')) || [];
+			const orderProductsContainer = document.querySelector('.order-products');
+			const orderTotalContainer = document.querySelector('.order-total');
+			let orderTotal = 0;
+	
+			cart.forEach(item => {
+				const orderProduct = document.createElement('div');
+				orderProduct.classList.add('order-col');
+				orderProduct.innerHTML = `
+					<div class="order-product-img">
+						<img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;">
+					</div>
+					<div class="order-product-details">
+						<div>${item.qty}x ${item.name}</div>
+						<div>₹${item.price * item.qty}</div>
+					</div>
+				`;
+				orderProductsContainer.appendChild(orderProduct);
+				orderTotal += item.price * item.qty;
+			});
+	
+			orderTotalContainer.innerText = `₹${orderTotal}`;
+		});
+	</script>
 </html>
